@@ -1,0 +1,61 @@
+# Importar módulos necesarios
+import json
+
+# Base de datos simulada
+class KnowledgeBase:
+    def __init__(self, filename='knowledge_base.json'):
+        self.filename = filename
+        self.load_knowledge()
+
+    def load_knowledge(self):
+        """Carga el conocimiento de un archivo JSON."""
+        try:
+            with open(self.filename, 'r') as file:
+                self.knowledge = json.load(file)
+        except FileNotFoundError:
+            self.knowledge = {}
+    
+    def save_knowledge(self):
+        """Guarda el conocimiento en un archivo JSON."""
+        with open(self.filename, 'w') as file:
+            json.dump(self.knowledge, file, ensure_ascii=False, indent=4)
+
+    def get_response(self, user_input):
+        """Devuelve la respuesta basada en la entrada del usuario."""
+        return self.knowledge.get(user_input.lower(), None)
+
+    def add_knowledge(self, user_input, response):
+        """Añade nuevo conocimiento a la base de datos."""
+        self.knowledge[user_input.lower()] = response
+        self.save_knowledge()
+
+
+# Clase para el chat
+class Chatbot:
+    def __init__(self):
+        self.knowledge_base = KnowledgeBase()
+
+    def ask_for_new_knowledge(self, user_input):
+        """Pregunta al usuario si puede ingresar nuevo conocimiento."""
+        print("Chatbot: No tengo información sobre eso.")
+        nuevo_conocimiento = input("¿Puedes enseñarme algo nuevo? ")
+        respuesta = input("¿Cuál sería la respuesta a eso? ")
+        self.knowledge_base.add_knowledge(nuevo_conocimiento, respuesta)
+        print("Chatbot: Gracias, he aprendido algo nuevo.")
+
+    def chat(self):
+        """Inicia la conversación del chatbot."""
+        print("Chatbot: Hola, ¿cómo puedo ayudarte?")
+        while True:
+            usuario_input = input("Tú: ")
+            respuesta = self.knowledge_base.get_response(usuario_input)
+            if respuesta:
+                print("Chatbot:", respuesta)
+            else:
+                self.ask_for_new_knowledge(usuario_input)
+
+
+# Iniciar el chatbot
+if __name__ == "__main__":
+    chatbot = Chatbot()
+    chatbot.chat()
