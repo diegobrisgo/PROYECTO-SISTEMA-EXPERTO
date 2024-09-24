@@ -2,7 +2,7 @@
 """
 Created on Sun Apr 28 23:40:51 2024
 
-@author: Efrain Jimenez M
+@author: Diego
 """
 
 import cv2
