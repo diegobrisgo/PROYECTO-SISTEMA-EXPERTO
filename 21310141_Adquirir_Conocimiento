@@ -1,31 +1,40 @@
-# Importar módulos necesarios
-import json
+import json  # Importa el módulo json para manejar archivos JSON
 
 # Base de datos simulada
 class KnowledgeBase:
     def __init__(self, filename='knowledge_base.json'):
+        # Inicializa la clase con el nombre de archivo por defecto
         self.filename = filename
-        self.load_knowledge()
+        self.load_knowledge()  # Carga el conocimiento desde el archivo
 
     def load_knowledge(self):
         """Carga el conocimiento de un archivo JSON."""
         try:
-            with open(self.filename, 'r') as file:
-                self.knowledge = json.load(file)
+            # Intenta abrir y cargar el archivo JSON
+            with open(self.filename, 'r', encoding='utf-8') as file:
+                self.knowledge = json.load(file)  # Carga el contenido JSON en un diccionario
         except FileNotFoundError:
+            # Si el archivo no se encuentra, inicializa la base de datos como vacía
             self.knowledge = {}
-    
+        except json.JSONDecodeError:
+            # Maneja el caso en que el archivo JSON está dañado
+            print("Error al decodificar el archivo JSON. Inicializando una base de datos vacía.")
+            self.knowledge = {}
+
     def save_knowledge(self):
         """Guarda el conocimiento en un archivo JSON."""
-        with open(self.filename, 'w') as file:
+        # Abre el archivo en modo escritura y guarda el contenido en formato JSON
+        with open(self.filename, 'w', encoding='utf-8') as file:
             json.dump(self.knowledge, file, ensure_ascii=False, indent=4)
 
     def get_response(self, user_input):
         """Devuelve la respuesta basada en la entrada del usuario."""
+        # Busca la respuesta en el diccionario, ignorando mayúsculas/minúsculas
         return self.knowledge.get(user_input.lower(), None)
 
     def add_knowledge(self, user_input, response):
         """Añade nuevo conocimiento a la base de datos."""
+        # Agrega el nuevo conocimiento al diccionario y lo guarda en el archivo
         self.knowledge[user_input.lower()] = response
         self.save_knowledge()
 
@@ -33,29 +42,35 @@ class KnowledgeBase:
 # Clase para el chat
 class Chatbot:
     def __init__(self):
+        # Inicializa la clase y crea una instancia de KnowledgeBase
         self.knowledge_base = KnowledgeBase()
 
     def ask_for_new_knowledge(self, user_input):
         """Pregunta al usuario si puede ingresar nuevo conocimiento."""
-        print("Chatbot: No tengo información sobre eso.")
-        nuevo_conocimiento = input("¿Puedes enseñarme algo nuevo? ")
-        respuesta = input("¿Cuál sería la respuesta a eso? ")
-        self.knowledge_base.add_knowledge(nuevo_conocimiento, respuesta)
-        print("Chatbot: Gracias, he aprendido algo nuevo.")
+        print("Chatbot: No tengo información sobre eso.")  # Mensaje de falta de información
+        nuevo_conocimiento = input("¿Puedes enseñarme algo nuevo? ")  # Pide al usuario que aporte nuevo conocimiento
+        respuesta = input("¿Cuál sería la respuesta a eso? ")  # Pide la respuesta correspondiente
+        self.knowledge_base.add_knowledge(nuevo_conocimiento, respuesta)  # Guarda el nuevo conocimiento
+        print("Chatbot: Gracias, he aprendido algo nuevo.")  # Agradece al usuario
 
     def chat(self):
         """Inicia la conversación del chatbot."""
-        print("Chatbot: Hola, ¿cómo puedo ayudarte?")
+        print("Chatbot: Hola, ¿cómo puedo ayudarte? (Escribe 'salir' para terminar la conversación)")
         while True:
-            usuario_input = input("Tú: ")
-            respuesta = self.knowledge_base.get_response(usuario_input)
+            usuario_input = input("Tú: ")  # Espera la entrada del usuario
+            if usuario_input.lower() == 'salir':
+                # Si el usuario escribe "salir", termina la conversación
+                print("Chatbot: ¡Hasta luego!")
+                break
+            
+            respuesta = self.knowledge_base.get_response(usuario_input)  # Busca la respuesta correspondiente
             if respuesta:
-                print("Chatbot:", respuesta)
+                print("Chatbot:", respuesta)  # Si encuentra una respuesta, la muestra
             else:
-                self.ask_for_new_knowledge(usuario_input)
+                self.ask_for_new_knowledge(usuario_input)  # Si no, pregunta al usuario por nuevo conocimiento
 
 
 # Iniciar el chatbot
 if __name__ == "__main__":
-    chatbot = Chatbot()
-    chatbot.chat()
+    chatbot = Chatbot()  # Crea una instancia del chatbot
+    chatbot.chat()  # Inicia la conversación
