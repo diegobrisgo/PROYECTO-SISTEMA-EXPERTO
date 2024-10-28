@@ -1,0 +1,82 @@
+import random
+
+# Base de datos de equipos de fútbol mexicano con nuevas características
+equipos = [
+    {"nombre": "América", "colores": "Amarillo/Azul", "ciudad": "Ciudad de México", "titulos": 13, "estadio": "Estadio Azteca", "fundacion": 1916, "entrenador": "Fernando Ortíz"},
+    {"nombre": "Chivas", "colores": "Rojo/Blanco", "ciudad": "Guadalajara", "titulos": 12, "estadio": "Estadio Akron", "fundacion": 1906, "entrenador": "Veljko Paunović"},
+    {"nombre": "Cruz Azul", "colores": "Azul", "ciudad": "Ciudad de México", "titulos": 9, "estadio": "Estadio Azteca", "fundacion": 1927, "entrenador": "Joaquín Moreno"},
+    {"nombre": "Pumas", "colores": "Azul/Dorado", "ciudad": "Ciudad de México", "titulos": 7, "estadio": "Estadio Olímpico Universitario", "fundacion": 1954, "entrenador": "Antonio Mohamed"},
+    {"nombre": "Tigres", "colores": "Amarillo/Azul", "ciudad": "Monterrey", "titulos": 7, "estadio": "Estadio Universitario", "fundacion": 1960, "entrenador": "Robert Dante Siboldi"},
+    {"nombre": "Monterrey", "colores": "Azul/Blanco", "ciudad": "Monterrey", "titulos": 5, "estadio": "Estadio BBVA", "fundacion": 1945, "entrenador": "Fernando Ortiz"},
+    # Puedes agregar más equipos y características aquí...
+]
+
+# Lista de características con prioridad inicial
+caracteristicas = ["colores", "ciudad", "titulos", "estadio", "fundacion", "entrenador"]
+
+# Diccionario de aprendizaje para cada característica
+aprendizaje = {car: 1 for car in caracteristicas}  # Inicialización en 1 para evitar valores de 0
+
+# Selección de un equipo secreto
+equipo_secreto = random.choice(equipos)
+
+# Función para hacer preguntas basadas en la característica
+def hacer_pregunta(pregunta, equipo):
+    return equipo.get(pregunta, None)
+
+# Función para seleccionar la mejor pregunta basada en la puntuación de aprendizaje
+def elegir_mejor_pregunta():
+    return max(aprendizaje, key=aprendizaje.get)
+
+# Función que inicia el juego y permite que el sistema aprenda de las partidas
+def jugar():
+    print("¡Bienvenido al juego de Adivina Quién de equipos de fútbol mexicano!\n")
+    print("Piensa en un equipo de fútbol mexicano, y el sistema intentará adivinar cuál es.")
+    equipo_usuario = random.choice(equipos)  # El equipo que el usuario selecciona secretamente
+    intentos = 0
+    equipos_posibles = equipos.copy()  # Equipos que el sistema no ha descartado
+
+    while True:
+        print("\nIntento", intentos + 1)
+        mejor_pregunta = elegir_mejor_pregunta()
+        respuesta_usuario = hacer_pregunta(mejor_pregunta, equipo_usuario)
+
+        # Si no hay respuesta en la característica, pasa a la siguiente
+        if respuesta_usuario is None:
+            continue
+
+        print(f"¿Tu equipo tiene '{mejor_pregunta}' igual a '{respuesta_usuario}'? (escribe 'si' o 'no'):")
+
+        respuesta = input().strip().lower()
+        
+        if respuesta == "si":
+            # Filtramos equipos que coincidan con la respuesta y aumentamos el valor de aprendizaje
+            equipos_posibles = [eq for eq in equipos_posibles if eq[mejor_pregunta] == respuesta_usuario]
+            aprendizaje[mejor_pregunta] += 1
+
+            # Si sólo queda un equipo en equipos posibles, el sistema adivina
+            if len(equipos_posibles) == 1:
+                print(f"¡El sistema ha adivinado! Tu equipo es {equipos_posibles[0]['nombre']}.")
+                break
+        else:
+            # Filtramos equipos que no coincidan con la respuesta y disminuimos el aprendizaje
+            equipos_posibles = [eq for eq in equipos_posibles if eq[mejor_pregunta] != respuesta_usuario]
+            aprendizaje[mejor_pregunta] -= 1
+
+        # Si se quedan sin opciones viables, finaliza el juego
+        if not equipos_posibles:
+            print("Parece que el sistema no logró adivinar tu equipo. Intenta nuevamente o elige otro equipo.")
+            break
+
+        # Incrementa los intentos y revisa si ha alcanzado el límite de preguntas
+        intentos += 1
+        if intentos >= 5:
+            print("No se logró adivinar en el límite de intentos. ¡Gracias por jugar!")
+            break
+
+    # Mostrar aprendizaje actualizado
+    print("\nFrecuencia de éxito de preguntas tras esta partida:", aprendizaje)
+
+# Ejecutar el juego
+if __name__ == "__main__":
+    jugar()
