@@ -1,0 +1,99 @@
+import random
+
+class JuegoClue:
+    def __init__(self):
+        # Definir los personajes, locaciones y armas
+        self.personajes = [
+            {"nombre": "Doctora Emilia Martínez", "profesión": "Cirujana"},
+            {"nombre": "Señor Gonzalo López", "profesión": "Empresario"},
+            {"nombre": "Sofía Rodríguez", "profesión": "Artista"},
+            {"nombre": "Raúl Fernández", "profesión": "Profesor de Historia"},
+            {"nombre": "Inés Solano", "profesión": "Detective privada"}
+        ]
+
+        self.locaciones = [
+            "Sala de estar",
+            "Habitación del hotel",
+            "Cocina",
+            "Biblioteca",
+            "Jardín"
+        ]
+
+        self.armas = [
+            "Candelabro",
+            "Daga",
+            "Revólver",
+            "Veneno",
+            "Tubo de plomo"
+        ]
+
+        # Definir las historias
+        self.historias = {
+            ("Sofía Rodríguez", "Sala de estar", "Candelabro"): 
+                "Sofía, conocida por su carácter apasionado, estaba en la sala de estar discutiendo sobre su más reciente exposición. "
+                "La discusión se tornó violenta cuando fue cuestionada sobre la autenticidad de sus obras. "
+                "En un arranque de ira, tomó el candelabro y, en un momento de descuido, golpeó a la víctima.",
+                
+            ("Raúl Fernández", "Biblioteca", "Tubo de plomo"): 
+                "El profesor Fernández siempre fue respetado por sus conocimientos, pero esa noche en la biblioteca, "
+                "algo en su temperamento cambió. Estaba discutiendo con la víctima sobre antiguos secretos históricos que podrían dañar su reputación. "
+                "En un ataque de desesperación, agarró un tubo de plomo y cometió el crimen.",
+                
+            ("Inés Solano", "Cocina", "Veneno"): 
+                "Inés Solano, la detective privada, era famosa por resolver los casos más difíciles, pero en esta ocasión se encontraba al otro lado de la ley. "
+                "En la cocina, mientras compartía un café con la víctima, vertió veneno en la bebida.",
+                
+            ("Gonzalo López", "Habitación del hotel", "Revólver"): 
+                "Gonzalo López, el empresario, tenía mucho que perder. En la habitación del hotel, confrontó a la víctima, "
+                "que estaba a punto de revelar información sobre una serie de negocios turbios. En un momento de desesperación, Gonzalo sacó un revólver y disparó.",
+                
+            ("Doctora Emilia Martínez", "Jardín", "Daga"): 
+                "La doctora Martínez era respetada en su campo, pero esa noche en el jardín, todo cambió. "
+                "En medio de una conversación acalorada, tomó una daga y cometió el crimen."
+        }
+
+    def seleccionar_crimen(self):
+        """Selecciona aleatoriamente un culpable, una locación y un arma para el caso."""
+        culpable = random.choice(self.personajes)
+        locacion = random.choice(self.locaciones)
+        arma = random.choice(self.armas)
+        return culpable["nombre"], locacion, arma
+
+    def narrar_historia(self, culpable, locacion, arma):
+        """Devuelve la narrativa correspondiente al caso seleccionado."""
+        return self.historias.get((culpable, locacion, arma), "No hay historia disponible para esta combinación.")
+
+    def jugar(self):
+        """Inicia el juego y controla la interacción con el jugador."""
+        print("¡Bienvenido al juego de Clue!")
+        culpable, locacion, arma = self.seleccionar_crimen()
+
+        print("\nCaso Misterioso:")
+        print(f"El crimen ocurrió en: {locacion}")
+        print(f"El arma utilizada fue: {arma}\n")
+
+        # Mostrar la narrativa del caso
+        historia = self.narrar_historia(culpable, locacion, arma)
+        print("Narrativa del caso:")
+        print(historia)
+
+        # Opción para que el jugador acuse a alguien
+        while True:
+            acusar = input("\n¿Deseas acusar a alguien? (sí/no): ").strip().lower()
+            if acusar == 'sí':
+                sospechoso = input("¿Quién crees que es el culpable? ").strip()
+                if sospechoso == culpable:
+                    print(f"¡Correcto! {sospechoso} es el culpable.")
+                else:
+                    print(f"Incorrecto. El culpable era {culpable}.")
+                break
+            elif acusar == 'no':
+                print("Gracias por jugar. ¡Hasta la próxima!")
+                break
+            else:
+                print("Respuesta no válida. Por favor, responde 'sí' o 'no'.")
+
+# Iniciar el juego
+if __name__ == "__main__":
+    juego = JuegoClue()
+    juego.jugar()
