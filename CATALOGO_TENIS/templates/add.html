@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Tenis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        form {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Agregar Tenis</h1>
+    <form action="/add" method="POST" enctype="multipart/form-data">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="marca">Marca:</label>
+        <select id="marca" name="marca" required>
+            <option value="Nike">Nike</option>
+            <option value="Adidas">Adidas</option>
+            <option value="Puma">Puma</option>
+            <option value="Reebok">Reebok</option>
+            <option value="Otra">Otra</option>
+        </select>
+
+        <label for="talla">Talla:</label>
+        <input type="number" step="0.5" id="talla" name="talla" required>
+
+        <label for="genero">Género:</label>
+        <select id="genero" name="genero" required>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Unisex">Unisex</option>
+        </select>
+
+        <label for="disponibilidad">Disponibilidad:</label>
+        <select id="disponibilidad" name="disponibilidad" required>
+            <option value="En stock">En stock</option>
+            <option value="Fuera de stock">Fuera de stock</option>
+        </select>
+
+        <label for="imagen">Imagen:</label>
+        <input type="file" id="imagen" name="imagen">
+
+        <!-- Botón para agregar -->
+        <button type="submit">Agregar</button>
+    </form>
+</body>
+</html>
